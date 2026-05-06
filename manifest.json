@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3 ,
+  "name": "Rating Predictor",
+  "version": "1.0.0",
+  "description": "Predict your rating",
+  "icons" : {
+    "128": "ic128.png",
+    "48": "ic48.png",
+    "16": "ic16.png"
+  },
+  "action":{
+    "default_icon": "ic16.png",
+    "default_popup": "popup.html"
+  }
+}
