@@ -11,5 +11,26 @@
   "action":{
     "default_icon": "ic16.png",
     "default_popup": "popup.html"
-  }
+  },
+  "permissions": [
+    "storage",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "https://codeforces.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background/service-worker.js",
+     "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://codeforces.com/contest/*"],
+      "js": ["content/standings.js"],
+      "css": ["styles/predictor.css"]
+    }
+  ]
 }
