@@ -1,12 +1,133 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Hi Guys!!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CF Rating Predictor</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      width: 320px;
+      min-height: 220px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+    }
+
+    .card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 22px 18px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #f8fafc;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .quote {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .grass {
+      margin-top: 10px;
+      font-size: 26px;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <h1>So stress about rating??</h1>
+
+  <div class="card">
+
+    <img id="ic48" class="logo" src="ic48.png" alt="CF Predictor" />
+
+    <h1>Rating Predictor</h1>
+
+    <p class="subtitle">
+      Live rating predictions for Codeforces contests.
+      Fast. Accurate. Stress-reducing.
+    </p>
+
+    <div class="quote">
+      “Worried about your rating again?<br>
+      Maybe solve one more problem... or touch some grass.”
+
+      <div class="grass">🌱</div>
+    </div>
+
+    <div class="footer">
+      Powered by FFT + questionable life choices.
+      Wishing you high ratings.
+    </div>
+    <div class="footer">
+    
+      Made with ❤️ by
+    
+      <a href="https://github.com/keshavraj7" target="_blank">
+        Imperus
+      </a>
+    
+    </div>
+  </div>
+  
 </body>
 
 </html>
