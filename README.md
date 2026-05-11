@@ -113,7 +113,7 @@ O(n²)
 
 which becomes impractical for contests with thousands of users.
 
-To address this issue, the extension uses FFT (Fast Fourier Transform) based convolution techniques to accelerate large-scale probability aggregation and expectation calculations. This significantly reduces computational overhead and allows the predictor to remain usable even for contests containing more than 8,000 participants.
+To address this issue, the extension uses FFT (Fast Fourier Transform) based convolution techniques to accelerate large-scale probability aggregation and expectation calculations. This significantly reduces computational overhead and allows the predictor to remain usable even for contests containing more than 10,000 participants.
 
 After prediction generation, the extension dynamically modifies the standings table using Chrome content scripts and injects visually integrated prediction columns into the existing Codeforces interface.
 
@@ -194,4 +194,4 @@ https://github.com/keshavraj7
 
 # Project Summary
 
-Designed and developed a Chrome extension for live Codeforces rating prediction capable of handling contests with 8,000+ participants using FFT-optimized expectation calculations, asynchronous API orchestration, and browser-side ranking analysis. The project focuses on scalable rating prediction pipelines, browser extension systems engineering, and real-time competitive programming analytics.
+Designed and developed a Chrome extension for live Codeforces rating prediction capable of handling contests with 10,000+ participants using FFT-optimized expectation calculations, asynchronous API orchestration, and browser-side ranking analysis. The project focuses on scalable rating prediction pipelines, browser extension systems engineering, and real-time competitive programming analytics.
