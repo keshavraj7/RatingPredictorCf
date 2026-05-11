@@ -1,0 +1,25 @@
+.cf-rating-header {
+    min-width: 90px;
+}
+
+.cf-predict-delta,
+.cf-predict-new-rating {
+    font-weight: bold;
+    text-align: center;
+}
+
+.cf-positive {
+    color: #0a0;
+}
+
+.cf-negative {
+    color: #a00;
+}
+
+.cf-neutral {
+    color: gray;
+}
+
+.cf-predict-new-rating {
+    opacity: 0.9;
+}
