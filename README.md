@@ -6,6 +6,8 @@ Rating Predictor is a Chrome extension designed to estimate live Codeforces rati
 The project was developed to explore the internal mechanics of large-scale competitive programming rating systems and to study how prediction pipelines behave under real-world constraints such as high participant counts, API latency, browser execution limits, and live DOM manipulation.
 
 Unlike simple rank-based estimators, the extension attempts to approximate the actual Codeforces rating methodology using probabilistic expected rank calculations and performance estimation techniques inspired by Elo-style systems. The predictor is optimized using FFT (Fast Fourier Transform) based convolution methods to reduce the computational complexity of large-scale expectation calculations.
+
+
 ![Rating Predictor Demo](testimg/testdata.jpeg)
 ---
 
