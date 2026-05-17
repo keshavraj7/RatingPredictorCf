@@ -9,6 +9,8 @@ Unlike simple rank-based estimators, the extension attempts to approximate the a
 
 
 ![Rating Predictor Demo](testimg/testdata.jpeg)
+
+![Rating Predictor Demo 2](testimg/testdata2.jpeg)
 ---
 
 # Motivation
