@@ -1,4 +1,4 @@
-import FFTConv from '../util/conv.js';
+import FFTConv from '../util/convolution.js';
 import binarySearch from '../util/binsearch.js';
 
 
