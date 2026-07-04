@@ -225,7 +225,7 @@ Measured prediction computation time (excluding API latency)
 ≈200 ms
 ```
 
-for contests containing approximately **13,000 participants**.
+for contests containing approximately **15,000 participants**.
 
 Overall execution time is typically dominated by Codeforces API response latency rather than local computation.
 
