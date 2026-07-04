@@ -1,201 +1,313 @@
 # RatingPredictor
-A extension to get live rating changes based on current position of any ongoing contest or any previous contest.
 
-Rating Predictor is a Chrome extension designed to estimate live Codeforces rating changes directly inside contest standings pages. The extension injects predicted rating deltas and estimated performance ratings into the existing Codeforces UI while a contest is still running, allowing participants to monitor approximate rating movement in real time without waiting for official rating updates.
+A Chrome Extension for predicting live Codeforces rating changes and performance ratings directly inside contest standings.
 
-The project was developed to explore the internal mechanics of large-scale competitive programming rating systems and to study how prediction pipelines behave under real-world constraints such as high participant counts, API latency, browser execution limits, and live DOM manipulation.
+RatingPredictor is a browser-side rating prediction engine built for Codeforces. It estimates rating deltas and performance ratings for ongoing contests by approximating the official Codeforces rating methodology. Predictions are injected directly into the standings page, allowing participants to monitor their expected rating movement in real time without waiting for official updates.
 
-Unlike simple rank-based estimators, the extension attempts to approximate the actual Codeforces rating methodology using probabilistic expected rank calculations and performance estimation techniques inspired by Elo-style systems. The predictor is optimized using FFT (Fast Fourier Transform) based convolution methods to reduce the computational complexity of large-scale expectation calculations.
+Unlike many web-based predictors, the extension executes entirely inside the browser and requires no external backend infrastructure. The project was developed to explore the engineering challenges behind scalable rating prediction systems, including browser extension development, large-scale ranking algorithms, asynchronous API orchestration, efficient expected-rank computation, and real-time DOM manipulation.
 
+---
+
+# Preview
 
 ![Rating Predictor Demo](testimg/testdata.jpeg)
 
 ![Rating Predictor Demo 2](testimg/testdata2.jpeg)
+
 ---
 
 # Motivation
 
-One of the most interesting aspects of competitive programming contests is the uncertainty of post-contest rating movement. While several unofficial predictors already exist, the goal of this project was not merely to replicate existing functionality, but to understand and engineer the complete pipeline from scratch.
+One of the most interesting aspects of competitive programming contests is the uncertainty surrounding rating changes after the contest ends. While several unofficial predictors already exist, this project was created to understand and engineer the complete prediction pipeline rather than simply reproducing existing solutions.
 
-The project focuses heavily on:
-- large-scale ranking computations
-- API optimization
-- browser extension engineering
-- asynchronous request orchestration
-- performance optimization for contests with thousands of participants
+The project focuses on building a scalable browser-side system capable of handling contests with thousands of participants while remaining responsive and lightweight.
 
-The extension was specifically designed to operate directly inside the browser without requiring external backend infrastructure.
+Major engineering areas explored include:
+
+- Browser Extension Development
+- Ranking Algorithms
+- Expected-Rank Computation
+- REST API Optimization
+- Asynchronous Programming
+- Parallel Request Processing
+- Browser-side Performance Optimization
+- Dynamic DOM Manipulation
 
 ---
 
 # Installation
 
-The extension is currently distributed through GitHub and can be installed manually using Chrome’s Developer Mode.
+The extension is distributed through GitHub and can be installed manually.
 
-First, download the repository either as a ZIP archive or by cloning it using Git.
+Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone <repository-url>
 ```
 
-After downloading, extract the repository to any folder on your system.
+or download it as a ZIP archive.
 
-Open Chrome and navigate to:
+Open Chrome and navigate to
 
-```text
+```
 chrome://extensions
 ```
 
-Enable **Developer Mode** using the toggle in the top-right corner.
+Enable **Developer Mode**.
 
-Then click:
+Click
 
-```text
+```
 Load unpacked
 ```
 
-and select the extracted project folder.
+Select the project folder.
 
-The extension will now be installed locally and become active automatically on Codeforces standings pages.
+The extension will now become active automatically on Codeforces standings pages.
 
 ---
 
 # Usage
 
-After installation, simply open any Codeforces contest standings page.
+Open any Codeforces standings page.
 
-Example:
+Example
 
-```text
+```
 https://codeforces.com/contest/2227/standings
 ```
 
-The extension automatically:
-1. detects the contest ID
-2. fetches standings data
-3. retrieves participant ratings
-4. computes rating predictions
-5. injects additional columns into the standings table
+The extension automatically
 
-The injected columns currently include:
-- predicted rating delta (Δ)
-- estimated performance rating
+- detects the contest
+- downloads standings
+- retrieves participant ratings
+- computes predicted rating changes
+- injects prediction columns into the standings
 
-The extension works on both:
-- common standings
-- friends standings
+Displayed information includes
 
-without requiring any manual interaction from the user.
+- Predicted Rating Delta (Δ)
+- Estimated Performance Rating
+
+The extension currently supports
+
+- Official Standings
+- Friends Standings
+
+without requiring any manual interaction.
 
 ---
 
 # Internal Working
 
-The prediction pipeline begins by querying the Codeforces API endpoint:
+The prediction pipeline consists of several stages.
 
-```text
+### 1. Standings Collection
+
+The extension requests contest standings using the Codeforces
+
+```
 contest.standings
 ```
 
-This endpoint provides the live contest standings, including participant rank, score, penalty, and handle information.
+API.
 
-Once standings are retrieved, the extension collects participant ratings using:
+This provides
 
-```text
-user.info
-```
-
-Because large contests may contain several thousand participants, the extension implements chunked and parallelized API requests in order to reduce overall waiting time while avoiding excessive throttling from the Codeforces API.
-
-After rating collection, the extension computes rating predictions using a probabilistic expectation model inspired by the official Codeforces rating system. The predictor estimates expected participant ranks based on pairwise win probabilities derived from rating differences.
-
-A naive implementation of this process would require quadratic complexity:
-
-```text
-O(n²)
-```
-
-which becomes impractical for contests with thousands of users.
-
-To address this issue, the extension uses FFT (Fast Fourier Transform) based convolution techniques to accelerate large-scale probability aggregation and expectation calculations. This significantly reduces computational overhead and allows the predictor to remain usable even for contests containing more than 10,000 participants.
-
-After prediction generation, the extension dynamically modifies the standings table using Chrome content scripts and injects visually integrated prediction columns into the existing Codeforces interface.
+- participant handles
+- score
+- penalty
+- current ranking
 
 ---
 
-# Performance Characteristics
+### 2. Rating Collection
 
-The current implementation has been tested on contests with:
-- 10,000+ participants
+Ratings are retrieved using
 
-Typical runtime depends primarily on Codeforces API latency rather than local computation speed.
+```
+user.info
+```
 
-The FFT-based prediction engine itself executes very quickly, while most of the total runtime is spent waiting for participant rating data to be fetched from the API.
+The Codeforces API accepts at most **500 handles** per request.
 
-The project also explores several optimization strategies including:
-- request chunking
-- parallel request batching
-- local caching architectures
-- API throttling mitigation
-- browser-side prediction pipelines
+To reduce waiting time, participant handles are divided into batches of 500 and fetched asynchronously using **five concurrent API requests**, significantly reducing total retrieval latency while respecting API limits.
+
+---
+
+### 3. Expected Rank Computation
+
+After collecting participant ratings, the extension reconstructs the expected-rank computation used by the Codeforces rating system.
+
+Instead of comparing every participant against every other participant, participant ratings are first aggregated into a histogram representing the rating distribution of the contest.
+
+The expected rank for every rating is then computed by directly convolving this histogram with the Elo win-probability function.
+
+To further improve performance, the rating domain is restricted to the practical Codeforces rating interval (approximately **-100 to 4100**) rather than the complete theoretical range. Since virtually every rated participant lies within this interval, the optimization substantially reduces computation while preserving prediction accuracy.
+
+---
+
+### 4. Rating Prediction
+
+Using the computed expected ranks, the extension estimates
+
+- expected seed
+- performance rating
+- rating delta
+
+using the same iterative methodology employed by the official Codeforces rating algorithm.
+
+---
+
+### 5. Browser Integration
+
+Finally, Chrome content scripts dynamically inject additional columns into the existing standings table without modifying the original Codeforces source code.
+
+The resulting interface remains visually consistent with the native Codeforces design.
+
+---
+
+# Complexity Analysis
+
+A straightforward implementation computes expected ranks by comparing every participant against every other participant.
+
+For **N** contestants,
+
+```
+Time Complexity
+
+O(N²)
+```
+
+which becomes prohibitively expensive for large contests.
+
+Instead, participant ratings are aggregated into a histogram over a bounded rating domain.
+
+Let
+
+```
+R = number of rating buckets
+```
+
+After restricting the practical rating interval,
+
+```
+R ≈ 4200
+```
+
+The expected-rank computation therefore becomes
+
+```
+O(R²)
+```
+
+Since **R** remains fixed regardless of contest size, the computational cost is effectively bounded for practical Codeforces contests.
+
+The convolution performs approximately
+
+```
+4200 × 4200
+≈ 17.6 million
+```
+
+operations.
+
+---
+
+# Performance
+
+The extension has been tested on contests containing more than **15,000 participants**.
+
+Measured prediction computation time (excluding API latency)
+
+```
+≈200 ms
+```
+
+for contests containing approximately **13,000 participants**.
+
+Overall execution time is typically dominated by Codeforces API response latency rather than local computation.
+
+Implemented performance optimizations include
+
+- Rating-domain reduction
+- Histogram-based expected-rank computation
+- Direct histogram convolution
+- 500-handle request batching
+- Five concurrent API requests
+- Asynchronous request processing
+- Browser-side caching
+- Efficient DOM updates
 
 ---
 
 # Current Limitations
 
-The extension is currently in an experimental/testing phase.
+The extension is currently under active development.
 
-At present, the system uses current participant ratings even when predicting historical contests. This means that predictions for old contests may differ significantly from official historical rating changes because pre-contest ratings are not yet reconstructed.
+Historical contests currently use participants' **current ratings** rather than their ratings immediately before the contest.
 
-This limitation currently exists intentionally in order to simplify validation of the live prediction pipeline and to test the extension behavior under ongoing contest conditions.
+Consequently, predictions for old contests may differ from official historical rating changes.
 
-Future updates are planned to include:
-- historical rating reconstruction
-- persistent local caching
-- faster incremental updates
-- improved handling for unofficial participants
-- more accurate performance estimation
-- optimized API synchronization
+This behavior is intentional during development and allows easier validation of the prediction pipeline on live contests.
+
+Future improvements include
+
+- Historical rating reconstruction
+- Incremental rating updates
+- Persistent browser caching
+- Improved handling of unofficial participants
+- More accurate performance estimation
+- Additional optimization for extremely large contests
 
 ---
 
 # Repository Structure
 
-```text
-background/   → Chrome service worker and API orchestration
-content/      → DOM manipulation and standings injection
-rating/       → FFT-based rating prediction engine
-api/          → Codeforces API wrapper
-util/         → utility/helper functions
-icons/        → extension assets
+```
+background/    Chrome Service Worker
+
+content/       DOM Injection
+
+rating/        Rating Prediction Engine
+
+api/           Codeforces API Wrapper
+
+util/          Utility Functions
+
+icons/         Extension Assets
+
+lib/           Supporting Libraries
 ```
 
 ---
 
 # Technical Highlights
 
-This project combines several engineering domains including:
-- browser extension development
-- asynchronous systems programming
-- large-scale ranking computations
-- algorithm optimization
-- FFT-based acceleration techniques
-- DOM injection systems
-- API orchestration and throttling management
-
-The extension was built entirely using JavaScript and Chrome Extension Manifest V3 architecture.
+- Chrome Extension (Manifest V3)
+- JavaScript (ES Modules)
+- Browser-side Rating Prediction
+- Histogram-based Expected-Rank Computation
+- Rating-domain Optimization
+- REST API Integration
+- Parallel API Request Batching
+- Asynchronous Programming
+- Browser-side Caching
+- Dynamic DOM Injection
 
 ---
 
 # Author
 
-Made with ❤️ by Imperus
+Made with ❤️ by **Imperus**
 
-GitHub:
+GitHub
+
 https://github.com/keshavraj7
 
 ---
 
 # Project Summary
 
-Designed and developed a Chrome extension for live Codeforces rating prediction capable of handling contests with 10,000+ participants using FFT-optimized expectation calculations, asynchronous API orchestration, and browser-side ranking analysis. The project focuses on scalable rating prediction pipelines, browser extension systems engineering, and real-time competitive programming analytics.
+RatingPredictor is a browser-side Chrome extension that estimates live Codeforces rating changes using histogram-based expected-rank computation and optimized rating-domain reduction. The extension combines asynchronous REST API orchestration, parallel request batching, browser-side caching, and dynamic DOM manipulation to efficiently generate predictions for contests containing over **15,000 participants**, with computation completing in approximately **200 ms** after participant data retrieval.

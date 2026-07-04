@@ -1,39 +1,23 @@
-import FFTConv from '../util/convolution.js';
 import binarySearch from '../util/binsearch.js';
-
-
+import bruteForceConvolve from '../util/bruteForceConv.js';
 const DEFAULT_RATING = 1400;
 
-export const MAX_RATING_LIMIT = 6000;
-export const MIN_RATING_LIMIT = -500;
+export const MAX_RATING_LIMIT = 4100;
+export const MIN_RATING_LIMIT = -100;
 const RATING_RANGE_LEN =
     MAX_RATING_LIMIT - MIN_RATING_LIMIT;
 const ELO_OFFSET = RATING_RANGE_LEN;
 const RATING_OFFSET = -MIN_RATING_LIMIT;
 
-const ELO_WIN_PROB =
-    new Array(2 * RATING_RANGE_LEN + 1);
+const ELO_WIN_PROB =new Array(2 * RATING_RANGE_LEN + 1);
 
-for (
-    let i = -RATING_RANGE_LEN;
-    i <= RATING_RANGE_LEN;
-    i++
-) {
-    ELO_WIN_PROB[i + ELO_OFFSET] =
-        1 / (1 + Math.pow(10, i / 400));
+for (let i = -RATING_RANGE_LEN;i <= RATING_RANGE_LEN;i++) {
+    ELO_WIN_PROB[i + ELO_OFFSET] =1 / (1 + Math.pow(10, i / 400));
 }
-
-const fftConv =
-    new FFTConv(
-        ELO_WIN_PROB.length +
-        RATING_RANGE_LEN - 1
-    );
 
 export class Contestant {
 
-    constructor(
-        handle,
-        points,
+    constructor(handle,points,
         penalty,
         rating
     ) {
@@ -76,8 +60,7 @@ export class RatingCalculator {
             ] += 1;
         }
 
-        this.seed =
-            fftConv.convolve(ELO_WIN_PROB, counts);
+        this.seed =bruteForceConvolve(ELO_WIN_PROB, counts);
 
         // +1 so seed represents expected rank (starts at 1)
         for (
