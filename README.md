@@ -276,9 +276,6 @@ api/           Codeforces API Wrapper
 
 util/          Utility Functions
 
-icons/         Extension Assets
-
-lib/           Supporting Libraries
 ```
 
 ---
