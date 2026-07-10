@@ -297,11 +297,7 @@ util/          Utility Functions
 
 # Author
 
-Made with ❤️ by **Imperus**
-
-GitHub
-
-https://github.com/keshavraj7
+Made with ❤️ by **Keshav**
 
 ---
 
